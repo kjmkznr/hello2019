@@ -1,5 +1,7 @@
 package main
 
+// Reference: https://github.com/elastic/gosigar/blob/master/sys/linux/inetdiag.go
+
 import (
 	"bytes"
 	"encoding/binary"
