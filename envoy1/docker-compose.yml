@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  nginx1:
+    image: nginx:latest
+    networks:
+      - internal
+  nginx2:
+    image: nginx:latest
+    networks:
+      - internal
+
+  httpd1:
+    image: httpd:latest
+    networks:
+      - internal
+  httpd2:
+    image: httpd:latest
+    networks:
+      - internal
+
+
+  envoy:
+    image: envoyproxy/envoy:v1.9.0
+    networks:
+      - internal
+    ports:
+      - 8080:80
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+
+networks:
+  internal:
