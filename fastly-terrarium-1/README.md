@@ -1,0 +1,1 @@
+https://wasm.fastlylabs.com/
