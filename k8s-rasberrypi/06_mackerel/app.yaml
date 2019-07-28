@@ -1,0 +1,55 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: helloworld
+spec:
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      serviceAccountName: mackerel-serviceaccount
+      containers:
+      - name: helloworld
+        image: kjmkznr/go-http-helloworld
+        imagePullPolicy: "Always"
+        resources:
+          requests:
+            memory: 16Mi
+          limits:
+            memory: 128Mi
+      - name: mackerel-container-agent
+        image: kjmkznr/mackerel-container-agent-arm:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 128Mi
+        env:
+          - name: MACKEREL_CONTAINER_PLATFORM
+            value: kubernetes
+          - name: MACKEREL_APIKEY
+            value: 4LpEU2gkgLBk2i6SZbWcsCieWeeq8TmTCcDYiJoTo3E3
+          - name: MACKEREL_KUBERNETES_KUBELET_READ_ONLY_PORT
+            value: "0"
+          - name: MACKEREL_KUBERNETES_KUBELET_INSECURE_TLS
+            value: "true"
+          - name: MACKEREL_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: MACKEREL_KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MACKEREL_KUBERNETES_POD_NAME
+            valueFrom:
+             fieldRef:
+                fieldPath: metadata.name
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        beta.kubernetes.io/arch: arm
+        network: local
